@@ -5,7 +5,6 @@ terraform {
       version = "5.4.0"
     }
   }
-terraform {
   backend "azurerm" {
     resource_group_name  = "bala_rg"
     storage_account_name = "balastorage1"
@@ -14,8 +13,6 @@ terraform {
   }
 }
 
-
-}
 provider "azurerm" {
   features {
   }
