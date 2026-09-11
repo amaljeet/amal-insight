@@ -22,7 +22,7 @@ name = "amal-pord-02"
 location = "centralindia"
 }
 
-resource "azurerm_resource_group" "test" {
+resource "azurerm_resource_group" "test2" {
 name = "amal-pord-01"
 location = "centralindia"
 }
