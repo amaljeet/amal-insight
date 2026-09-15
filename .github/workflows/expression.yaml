@@ -1,0 +1,44 @@
+name: Production Workflow Trigger Demo
+ 
+on:
+  push:
+    branches:
+      - "develop"
+      - "feature/*"
+
+ 
+    paths:
+      - "app/**"
+      - "docker/**"
+      - ".github/workflows/**"
+ 
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
+      - ready_for_review
+ 
+ 
+jobs:
+  validation-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: print the workflow Context
+        run: |
+          echo "workflow Triggered as per plan"
+          echo "Event type is ${{github.event_name}}"
+          echo "Branch is $GITHUB_REF_NAME"
+
+    
+      - name: Demonstrate Feature Branch Condition
+        if: ${{ startsWith(github.ref_name, 'feature/') }}
+        run: |
+          echo "Feature branch detected successfully"
+ 
+      - name: Demonstrate Main Branch Condition
+        if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          echo "Main branch deployment logic triggered"
+          echo " is runner.os ${{runner.os}}"
