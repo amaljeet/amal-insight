@@ -41,4 +41,4 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           echo "Main branch deployment logic triggered"
-          echo " is runner.os ${{runner.os}}"
+          echo " my runner is runner.os ${{runner.os}}"
