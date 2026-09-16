@@ -1,0 +1,20 @@
+name: Docker Image Tag Demo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate Dynamic Image Tag
+        run: |
+          echo "IMAGE_TAG=v${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      - name: Display Image Tag
+        run: |
+          echo "Image Tag = $IMAGE_TAG"
+``
