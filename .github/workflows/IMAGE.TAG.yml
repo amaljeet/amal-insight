@@ -17,4 +17,3 @@ jobs:
       - name: Display Image Tag
         run: |
           echo "Image Tag = $IMAGE_TAG"
-``
