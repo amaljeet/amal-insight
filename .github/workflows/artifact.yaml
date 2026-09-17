@@ -20,7 +20,7 @@ jobs:
 
       - name: Run Container
         run: |
-          docker run -d -p 5000:5000 --name --name amal-container ingestion:v0
+          docker run -d -p 5000:5000 --name amal-container ingestion:v0
 
       - name: Generate Smoke Test Report
         run: |
@@ -30,7 +30,7 @@ jobs:
 
       - name: Export Container Logs
         run: |
-          docker logs cwvj-flask-container > container-logs.txt
+          docker logs amal-container > container-logs.txt
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
