@@ -14,7 +14,7 @@ jobs:
       - name: Build Docker Image
         uses: docker/build-push-action@v7
         with:
-          context: .
+          context: .\projectfiles
           push: false
           tags:  ingestion:v0
 
