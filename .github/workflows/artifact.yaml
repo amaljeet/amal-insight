@@ -1,0 +1,62 @@
+name: 01 - Artifact upload and Download
+
+on:
+  workflow_dispatch:
+
+jobs:
+  flask-ci-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./.github/workflows/projectfiles
+          push: false
+          tags:  ingestion:v0
+
+      - name: Run Container
+        run: |
+          docker run -d -p 5000:5000 --name amal-container ingestion:v0
+
+      - name: Generate Smoke Test Report
+        run: |
+          sleep 5
+          curl http://localhost:5000 > smoke-test-report.txt
+          curl http://localhost:5000/health >> smoke-test-report.txt
+
+      - name: Export Container Logs
+        run: |
+          docker logs amal-container > container-logs.txt
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: mera-artifacts
+          path: |
+            smoke-test-report.txt
+            container-logs.txt
+
+  review-job:
+    runs-on: ubuntu-latest
+
+    needs:
+      - flask-ci-job
+
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: mera-artifacts
+
+      - name: Review Downloaded Artifacts
+        run: |
+          echo "===== Smoke Test Report ====="
+          cat smoke-test-report.txt
+
+          echo ""
+          echo "===== Container Logs ====="
+          cat container-logs.txt
