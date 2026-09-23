@@ -1,0 +1,33 @@
+Hello Team,
+We are pleased to announce that we are now providing GitHub Enterprise Support for PSM customers. Please review the routing guidelines below to ensure cases are assigned correctly.
+
+ ✅ Route to IMS: GitHub Support assignment group when:
+
+The customer has Premier Support for Microsoft offering with a GitHub-related issue.
+The customer account contains both a GitHub Special Handling Note and a Company Record Note.
+The issue involves a GitHub Enterprise production outage or a business-critical service impact.
+ 🔍 Common GitHub Enterprise Keywords
+Be aware of the following GitHub Enterprise products and technologies when reviewing cases:
+
+GitHub Enterprise Cloud (GHEC)
+GitHub Enterprise Server (GHES)
+GitHub Actions
+GitHub Copilot
+GitHub Codespaces
+Dependabot
+GitHub Advanced Security (GHAS)
+Pull Requests (PRs)
+GitHub Repositories
+GitHub Webhooks
+SAML / SSO integration with GitHub
+SCIM in gitHub (System for Cross-domain Identity Management)
+Enterprise Managed Users (EMU)
+GitHub API
+Actions Runners
+Repository Access
+Repository Migrations
+⚠️ Important Routing Notes
+All onboarded GitHub Enterprise customers will have both a GitHub Special Handling Note and a Company Record Note on their account.
+If these notes are not present, only GitHub production outages or business-critical service impact cases should be routed to IMS: GitHub Support.
+Do not transfer tickets based solely on GitHub-related keywords. Always validate company's service offering, special handling note, and and company record notes before routing.
+CSP customers are not entitled to this service and should be directed to engage their Account Executive (AE) for information on available support options
