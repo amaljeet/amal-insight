@@ -1,15 +1,28 @@
-from playwright.sync_api import sync_playwright
+import pyautogui
+import time
+from datetime import datetime
 
-with sync_playwright() as p:
-    browser = p.chromium.launch(
-        channel="msedge",
-        headless=False
-    )
+DURATION = 30 * 60  # 30 minutes
+MOVE_DISTANCE = 50
 
-    page = browser.new_page()
-    page.goto("https://www.microsoft.com")
+print("Desktop automation test starts in 5 seconds.")
+print("Keep your existing Edge window open.")
+print("Press Ctrl+C in PowerShell to stop.")
 
-    print("Microsoft Edge automation test successful!")
+time.sleep(5)
+start_time = time.time()
 
-    input("Press Enter to close the browser...")
-    browser.close()
+try:
+    while time.time() - start_time < DURATION:
+        pyautogui.moveRel(MOVE_DISTANCE, 0, duration=0.5)
+        time.sleep(1)
+
+        pyautogui.moveRel(-MOVE_DISTANCE, 0, duration=0.5)
+
+        print(f"[{datetime.now():%H:%M:%S}] Mouse movement test running")
+        time.sleep(10)
+
+    print("30-minute test completed.")
+
+except KeyboardInterrupt:
+    print("Test stopped manually.")
