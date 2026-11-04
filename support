@@ -31,3 +31,13 @@ All onboarded GitHub Enterprise customers will have both a GitHub Special Handli
 If these notes are not present, only GitHub production outages or business-critical service impact cases should be routed to IMS: GitHub Support.
 Do not transfer tickets based solely on GitHub-related keywords. Always validate company's service offering, special handling note, and and company record notes before routing.
 CSP customers are not entitled to this service and should be directed to engage their Account Executive (AE) for information on available support options
+
+This is for all
+Thanks for everyone's response. Since everyone does have Terraform expertise,
+I'll schedule some time shortly to go over this project and where I'd like to insert you into this. 
+We are just getting started on this so no immediate work but for now please get familiar with the Datadog 
+Terraform provider and specifically the datadog_monitor resource block type. 
+This project will require you to be able to take an existing Datadog alert that is in JSON format 
+and create the Terraform equivalent of that. 
+I actually have a Python script that may do this for us but I am not at a point of trusting
+it so we may need to default to manually doing this.
