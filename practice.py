@@ -1,0 +1,28 @@
+import pyautogui
+import time
+from datetime import datetime
+
+DURATION = 4 * 60 * 60  # 30 minutes
+MOVE_DISTANCE = 850
+
+print("Desktop automation test starts in 5 seconds.")
+print("Keep your existing Edge window open.")
+print("Press Ctrl+C in PowerShell to stop.")
+
+time.sleep(5)
+start_time = time.time()
+
+try:
+    while time.time() - start_time < DURATION:
+        pyautogui.moveRel(MOVE_DISTANCE, 0, duration=0.5)
+        time.sleep(1)
+
+        pyautogui.moveRel(-MOVE_DISTANCE, 0, duration=0.5)
+
+        print(f"[{datetime.now():%H:%M:%S}] Mouse movement test running")
+        time.sleep(10)
+
+    print("30-minute test completed.")
+
+except KeyboardInterrupt:
+    print("Test stopped manually.")
