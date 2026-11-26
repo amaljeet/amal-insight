@@ -1,0 +1,41 @@
+. The problem (slide 3)
+"Imagine you have 10 repos. Each one builds, tests, and deploys the same way. Today you copy-paste the same YAML into all 10. If the process changes, you edit all 10 files, and someone always misses one. That's the pain."
+
+
+2. The idea (slide 4)
+"Instead of copying, we write the pipeline once in one central place. Every other repo just says, 'run that pipeline.' It works like a function in programming. You write it once and call it many times."
+
+
+3. What workflow_call means (slides 5–6)
+"workflow_call is a trigger, like push or pull_request. It tells GitHub, 'this workflow doesn't start on its own. Another workflow can call it.'
+Normal workflow: it starts when you push code.
+Reusable workflow: it starts when someone calls it.
+Inside it we define:
+inputs: the values we pass in, like the environment name or Node version
+secrets: the passwords or tokens we pass in
+outputs: the values we send back, like a build version"
+
+
+4. How to call it (slide 7)
+"In the caller workflow, instead of steps: we write uses: and point to the reusable file. Then we pass the values with with: and secrets:. That's the whole call."
+jobs:
+  build:
+    uses: my-org/shared-workflows/.github/workflows/build.yml@main
+    with:
+      environment: dev
+    secrets: inherit
+
+
+5. Same repo vs. another repo (slide 8)
+Same repo: uses: ./.github/workflows/build.yml
+Another repo: uses: org/repo/.github/workflows/build.yml@v1
+"The other repo has to allow access, either because it's public or because its Actions settings permit sharing."
+6. Things to remember (slides 9–12)
+A reusable workflow is called at the job level, not as a step.
+Secrets aren't passed automatically. Pass them explicitly or use secrets: inherit.
+Outputs go from the reusable workflow to the caller using needs.<job>.outputs.
+Pin a version such as @v1 or a commit SHA, not @main, so a change in the shared file doesn't break every team at once.
+You can nest reusable workflows, but only a few levels deep.
+7. Closing line (slide 15)
+"Write once, reuse everywhere. This gives us less duplication, easier updates, and consistent pipelines across all teams."
+Do you want me to put these talking points into the speaker notes on each slide? I can also simplify the slide text itself.
