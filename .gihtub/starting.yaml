@@ -1,0 +1,33 @@
+“Hi everyone, good morning. Today I’m going to talk about GitHub Actions, specifically workflow_call and reusable workflows.
+
+Before we start, let me give you a simple scenario. Suppose we have 20 GitHub repositories, and every repository has almost the same CI pipeline: checkout, build, test, security scan, and deploy.
+
+If we copy the same YAML into all 20 repositories, what happens when we need to change one common step? We may have to update 20 different YAML files.
+
+This is exactly the problem reusable workflows help us solve. Instead of duplicating the same pipeline logic everywhere, we can create the workflow once and allow other workflows to call it using workflow_call.
+
+So in this session, we’ll understand what workflow_call is, how to create a reusable YAML workflow, how another workflow calls it, and how we pass inputs and secrets. Finally, we’ll look at a practical example.”
+
+That introduction naturally leads into your deck’s progression from duplicated pipeline logic to workflow_call, caller workflows, and advanced patterns.
+
+Then move to Slide 2
+
+Say:
+
+“So by the end of this session, you should be able to understand why reusable workflows are useful, how workflow_call works, how a caller workflow invokes a reusable workflow, and some advanced concepts like outputs, matrices, nesting, and versioning.”
+
+💡 One important presentation tip
+
+Don’t read the slides word-for-word. Use each slide as a visual reference and explain it conversationally.
+
+For example, on the duplicated-pipeline slide, ask your teammates:
+
+“If the same pipeline exists in 20 repositories and tomorrow we need to change the security scan step, do we really want to modify 20 YAML files?”
+
+Then:
+
+“No. We want to define that logic once and reuse it. And that brings us to reusable workflows.”
+
+That transition will take you perfectly into the reusable workflow architecture slide.
+
+Opening section target: ~2–3 minutes. After that, start the technical explanation with on: workflow_call.
