@@ -1,0 +1,98 @@
+[TIME 0:00–1:00]​
+
+SAY:​
+
+Good morning everyone, and thank you for joining. Today's session is about GitHub Actions reusable workflows, using the workflow_call trigger. 
+The idea is simple: build your pipeline once, and standardize it everywhere.
+This is a practical 30-minute session, so we'll look at real YAML examples, not just theory. 
+We'll start with the problem, then see how reusable workflows solve it, build one in three steps, look at common gotchas, and finish with governance and a small exercise.​
+
+Slide 2
+[TIME 1:00–2:00]​
+
+Here's what you'll be able to do by the end. One: understand why reuse matters, so you can remove repeated build, test and deploy YAML.
+Two: define a reusable workflow using workflow_call, which is basically its contract. Three: call it from another workflow using uses, with and secrets. 
+And four: use advanced patterns like outputs, matrices, nesting and versioning. In short, you'll be able to design, call and govern reusable workflows.​
+
+Slide 3
+[TIME 2:00–4:00]​
+
+SAY:​
+
+Let's start with the problem. Think of three repositories: A, B and C. 
+Each has the same four stages: build, test, security scan and deploy. Usually that happens because someone copies the YAML from one repo to the next. 
+At first it feels quick, but now every repo is its own maintenance burden. 
+If we find a security issue in the scan step, we must fix it in every repository. Some will get fixed, some will be forgotten. 
+That's drift, inconsistent controls and slower fixes. 
+Same logic multiplied by many repositories. So the question is: can we define it once?​
+
+SLide 4
+Yes, and this is the architecture. On the left, a caller workflow. 
+It's triggered by normal events like push, pull_request, workflow_dispatch or schedule. 
+Instead of defining all the steps itself, it delegates an entire job to a shared workflow.
+In the middle, the reusable workflow, which is triggered by on: workflow_call and stored in .github/workflows. 
+Between them is the shared contract: typed inputs, allowed secrets, outputs and permissions. 
+One important point: reusable workflow files must be directly inside .github/workflows. Subdirectories are not supported.​
+
+SLIDE 5
+Step one: create the reusable workflow. Look at the YAML. We give it a name, and under 'on' we use workflow_call. 
+That single key makes this workflow callable. Under it we define inputs. node-version is a string with default 20. run-tests is a boolean with default true. 
+Then secrets: we declare NPM_TOKEN as optional. On the right: the file lives at .github/workflows/reusable-ci.yml. Inputs support string, boolean and number, 
+and the caller's values must match the type. For secrets, you either declare named secrets, or the caller can use secrets: inherit where appropriate.​
+
+Step 6
+Step two: implement the jobs in the same file. Inside jobs, inputs and secrets behave like contexts. 
+Here we have a test job on ubuntu-latest, with permissions set to contents: read. We check out the code, set up Node using inputs.node-version, and run npm ci. 
+Notice the if condition: if inputs.run-tests is true, we run npm test. And NODE_AUTH_TOKEN comes from secrets.NPM_TOKEN. 
+On the right: inputs are configuration from the caller, secrets are sensitive values, and permissions should follow least privilege. 
+
+Step 7
+Step three: call it. This is the most important syntax point. A reusable workflow is called at the job level, not inside steps. 
+Here's a normal workflow named Application CI, triggered on pull_request and push to main. The job called ci has no runs-on and no steps. 
+Instead it has uses, pointing to the reusable workflow. The format is owner, repo, path to the file, then @ref. 
+Then with passes the typed inputs, and secrets passes named secrets, or you can use secrets: inherit. 
+For production, pin to a release tag or a commit SHA. A SHA is the most immutable reference.
+Through a chain of workflows, permissions can stay the same or become more restrictive, never broader.​
+
+Step 8
+The reusable workflow can be in the same repository or in another one. The syntax changes, 
+the mental model doesn't. For the same repo, you use ./.github/workflows/reusable-ci.yml, with no @ref allowed. 
+It uses the workflow from the same commit as the caller. For another repo, you need owner, repository, workflow path and a ref, like @v1. 
+And the access settings must permit that repository to use it. Local is great while developing; remote is how you standardize across a whole organization.
+
+Step 9
+Most reusable-workflow failures happen at the contract boundary, so let's look at four gotchas. Inputs: the type must match, boolean, number or string. 
+Named secrets: map each secret individually for explicit control. secrets: inherit is convenient, and works within the same organization or enterprise. 
+And environment secrets: on.workflow_call does not accept an environment key. If you define an environment on a job inside the reusable workflow, 
+it uses that environment's secret. Keep this in mind when something works in one place and fails in anoth
+
+Step 10
+Now, how does the caller get something back? Outputs. The chain is step to job to workflow output,
+and then the caller reads it using needs. On the left: in the reusable workflow, a step with id meta writes tag to GITHUB_OUTPUT. 
+The build job exposes it as an output. The workflow_call outputs section exposes it as image-tag. On the right: the caller has a build job that uses the reusable workflow, 
+and a deploy job with needs: build, which reads needs.build.outputs.image-tag. 
+
+Step 11
+A few advanced patterns. Matrix: use strategy.matrix on the caller job to call the reusable workflow for multiple targets, 
+like different Node versions. Nesting: a reusable workflow can call another reusable workflow. 
+GitHub supports a caller plus up to three nested levels. Secret propagation: secrets only pass to the directly called workflow, 
+so pass them again at each level. And permissions chain: a nested workflow can never elevate permissions, so keep the caller restrictive. 
+Use these to scale reuse without losing clarity or security.​
+
+​Design tip: expose stable, meaningful outputs, and don't leak implementation details to every caller.​
+​
+Step 12
+My advice: treat reusable workflows like an internal product. Version them intentionally: release tags like v1, plus commit SHAs where you need high assurance. 
+Protect the source with CODEOWNERS, branch protection, required reviews and automated tests. Keep contracts stable: add optional inputs before making breaking changes. 
+And centralize carefully. One shared repository improves consistency, but an outage or a breaking change has a wider blast radius.​
+
+Step 14
+his slide is a checklist for when you see 'workflow is not valid'. Most common: calling the workflow inside steps.
+It must be jobs.job_id.uses. Second: the called YAML is missing on: workflow_call. Third: wrong path. It must sit directly in .github/workflows. Then there are wrong input types, like passing a quoted string to a boolean; assuming secrets flow automatically, when they must be passed or inherited,
+and re-passed through nested workflows; and using an unstable ref instead of a tag or SHA. Keep this slide handy for troubleshooting.​
+
+Step 15
+Here's a hands-on exercise. Convert a duplicated CI pipeline into one reusable workflow and two callers. Task A: create reusable-ci.yml with a node-version input, 
+a run-tests boolean, an optional NPM_TOKEN secret and an image-tag output. Task B: create app-a.yml and app-b.yml, pass different Node.js versions, and trigger both on pull_request. 
+Success means both callers run the shared jobs, inputs are visible in behavior, secrets are never printed, a
+nd the output is consumed by a downstream job. For a challenge, add a matrix for Node 20 and 22, then pin the workflow to a release tag.​
